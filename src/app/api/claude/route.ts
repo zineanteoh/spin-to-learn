@@ -27,12 +27,11 @@ export async function GET(request: Request) {
     messages: [
       {
         role: "user",
-        content:
-          "The following are examples of conversation scenarios. Each scenario is made up of three parts: a who, a what, and a how." +
-          "Each part is described by an emoji and a short phrase. For example, 🐶🧮🦴 means who: dog, what: teaching about abacus math, and how: while gnawing on a bone." +
-          "Based on the following examples, generate one new scenario. Provide only the scenario, no other text." +
-          "Here are the examples:" +
-          exampleTitles,
+        content: `The following are examples of conversation scenarios. Each scenario is made up of three parts: a who, a what, and a how.
+          Each part is described by an emoji and a short phrase. For example, 🐶🧮🦴 means who: dog, what: teaching about abacus math, and how: while gnawing on a bone.
+          Based on the following examples, generate one new scenario. Provide only the scenario, no other text.
+          Here are the examples:
+          ${exampleTitles}`,
       },
     ],
   });
