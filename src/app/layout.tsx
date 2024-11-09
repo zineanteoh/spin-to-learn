@@ -1,10 +1,12 @@
-import type { Metadata } from "next";
 import "@/app/globals.css";
+import { SidebarProvider } from "@/components/shadcn-ui/sidebar";
+import { Sidebar } from "@/components/Sidebar";
+import type { Metadata } from "next";
+import { CSSProperties } from "react";
 
-// TODO: come up with a better project name
 export const metadata: Metadata = {
-  title: "Slot Machine",
-  description: "Slot Machine",
+  title: "Spin To Learn!",
+  description: "Spin To Learn!",
 };
 
 export default function RootLayout({
@@ -14,7 +16,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <SidebarProvider
+          style={{ "--sidebar-width": "19rem" } as CSSProperties}
+        >
+          <Sidebar />
+          {children}
+        </SidebarProvider>
+      </body>
     </html>
   );
 }

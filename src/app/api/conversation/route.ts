@@ -1,5 +1,5 @@
 import { Anthropic } from "@anthropic-ai/sdk";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
 const WHO = "Hachiko";
 const WHAT = "abacus math";
@@ -11,14 +11,24 @@ const HOW = "by gnawing on a bone";
  * @returns
  */
 export async function POST(request: Request) {
+  // Set up the response encoder
+  const encoder = new TextEncoder();
+
+  // Create a TransformStream for handling the stream
+  const stream = new TransformStream();
+  const writer = stream.writable.getWriter();
+
   try {
+    // Initialize Anthropic client
     const anthropic = new Anthropic({
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
+    // Get all the messages up until this point
     const messages = await request.json();
 
-    const msg = await anthropic.messages.create({
+    // Get the next message
+    const anthropicStream = await anthropic.messages.stream({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
       system: `You are ${WHO} teaching the user about ${WHAT} ${HOW}.    
@@ -29,12 +39,38 @@ export async function POST(request: Request) {
       messages: messages,
     });
 
-    return NextResponse.json(msg);
+    // Start processing the stream
+    (async () => {
+      for await (const event of anthropicStream) {
+        if (event.type === "content_block_delta") {
+          const text = event.delta.text;
+          // Write each chunk to the stream
+          await writer.write(
+            encoder.encode(`data: ${JSON.stringify({ text })}\n\n`)
+          );
+        }
+      }
+
+      // Close the stream when done
+      await writer.close();
+    })();
+
+    // Return the stream with appropriate headers
+    return new Response(stream.readable, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+    });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json(
-      { error: "Failed to generate message" },
-      { status: 500 }
-    );
+    // Handle any errors
+    await writer.abort(error);
+    return new Response(JSON.stringify({ error: "Stream failed" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }
