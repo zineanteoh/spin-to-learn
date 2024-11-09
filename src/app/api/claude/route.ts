@@ -1,13 +1,17 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
-// talking to claude
+/**
+ * Generate a new conversation scenario (generic).
+ * @param request
+ * @returns
+ */
 export async function GET(request: Request) {
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
-  const exampleTitles = `🐶🧮🦴 Machiko is teaching about abacus math while gnawing on a bone.
+  const exampleTitles = `🐶🧮🦴 Hachiko is teaching about abacus math while gnawing on a bone.
     👩‍🎤🔭🎨 Bob Ross is teaching about astronomy by painting a beautiful landscape.
     👨🏻‍🦰🪐🥘 Ronald Weasley is teaching about Saturn's rings by describing his favorite meal.
     🕵🏻‍♂️📈🔎 Sherlock Holmes is teaching about economics by solving a whodunnit mystery.
@@ -32,6 +36,6 @@ export async function GET(request: Request) {
       },
     ],
   });
-  console.log(msg);
+  console.log(msg); // TODO: remove
   return NextResponse.json({ message: msg.content[0].text });
 }
