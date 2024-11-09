@@ -55,8 +55,8 @@ export function Sidebar({
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
+                  <span className="font-semibold">Your Spin History!</span>
+                  <span className="">All your past spins</span>
                 </div>
               </a>
             </SidebarMenuButton>

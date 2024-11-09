@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const msg = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
-      system: `You are ${WHO} teaching about ${WHAT} ${HOW}.    
+      system: `You are ${WHO} teaching the user about ${WHAT} ${HOW}.    
       You are having a mild conversation, without any physical actions or descriptions. Be concise and calm. Challenge the user with questions and challenges, provide answers in your follow up messages.
       Include only the spoken words of the character in your response, no other text. Do not include any text surrounded by *asterisks*.
       Based on the past messages in this conversation, respond with a single message. Provide continuity in your response if the conversation has already started. If there are no past messages, respond with a initial greeting.
