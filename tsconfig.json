@@ -21,7 +21,7 @@
     "paths": {
       "@/*": ["./src/*"],
       "@/components/*": ["./src/components/*"],
-      "@/shadcn/*": ["./src/components/ui/*"],
+      "@/shadcn-ui/*": ["./src/components/shadcn-ui/*"],
       "@/utils/*": ["./src/utils/*"]
     }
   },
