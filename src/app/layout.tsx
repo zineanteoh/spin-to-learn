@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import "@/app/globals.css";
 
 // TODO: come up with a better project name
 export const metadata: Metadata = {
@@ -8,9 +9,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
       <body>{children}</body>
