@@ -45,7 +45,7 @@ export function Sidebar({
   ...props
 }: React.ComponentProps<typeof ShadcnSidebar>) {
   return (
-    <Sidebar variant="floating" {...props}>
+    <ShadcnSidebar variant="floating" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -92,6 +92,6 @@ export function Sidebar({
           user={{ name: "Rachel Koh", email: "rachel@koh.com", avatar: "" }}
         />
       </SidebarFooter>
-    </Sidebar>
+    </ShadcnSidebar>
   );
 }
