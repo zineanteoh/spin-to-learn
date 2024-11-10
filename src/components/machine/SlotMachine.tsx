@@ -7,6 +7,7 @@ import { Button } from "@/shadcn-ui/button";
 import { useCallback, useMemo, useState } from "react";
 import SpinResult from "../SpinResult";
 import { useRouter } from "next/navigation";
+import { useAudioHook } from "@/hooks/useAudioHook";
 
 export const SLOT_MACHINE_N_REELS = 3;
 export const SLOT_MACHINE_SPIN_DURATION = 2000;
@@ -57,10 +58,15 @@ export function SlotMachine({
   const [what, setWhat] = useState<ItemProp[]>(() => shuffleWhat());
   const [how, setHow] = useState<ItemProp[]>(() => shuffleHow());
 
+  const { playSound, stopSound, stopAllSounds } = useAudioHook();
+
   // choose random items from each reel, and call onSpin callback
   const handleSpinClick = useCallback(() => {
     if (isSpinning) return;
     setIsSpinning(true);
+
+    // play spin sound
+    playSound("spin");
 
     const whoChoice = getRandomItem(whoChoices);
     const whatChoice = getRandomItem(whatChoices);
@@ -75,6 +81,14 @@ export function SlotMachine({
     onSpin?.(chosenItems);
 
     const maxDuration = Math.max(...spinDurations);
+
+    // play megaWin sound for each reel stop
+    spinDurations.forEach((duration) => {
+      setTimeout(() => {
+        playSound("jukebox", "bigWin");
+      }, duration);
+    });
+
     const timeout = setTimeout(() => {
       // re-shuffle the reels after the spin
       setIsSpinning(false);
@@ -82,6 +96,8 @@ export function SlotMachine({
       setWhat(shuffleWhat());
       setHow(shuffleHow());
       setIsModalOpen(true);
+      stopSound("spin");
+      playSound("jukebox", "megaWin");
     }, maxDuration + 1000); // extra 1.5 seconds to let the reels settle
     return () => clearTimeout(timeout);
   }, [
@@ -101,6 +117,8 @@ export function SlotMachine({
     setWhat,
     setHow,
     setIsModalOpen,
+    playSound,
+    stopSound,
   ]);
 
   return (
