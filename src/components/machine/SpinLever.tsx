@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Button } from "@/components/shadcn-ui/button";
 
 interface SpinLeverProps {
   onClick: () => void;
@@ -11,14 +11,14 @@ export function SpinLever({ onClick, isSpinning = false }: SpinLeverProps) {
       {/* Lever Container */}
       <div className="relative w-32 h-64">
         {/* Pivot Point */}
-        <div className="absolute top-8 left-1/2 w-4 h-4 bg-gray-900 rounded-full -translate-x-1/2" />
+        {/* <div className="absolute top-8 left-1/2 w-4 h-4 bg-gray-900 rounded-full -translate-x-1/2" /> */}
 
         {/* Lever Arm */}
         <div
           onClick={() => !isSpinning && onClick()}
           style={{
             position: "absolute",
-            top: "2rem",
+            top: "4rem",
             left: "50%",
             transformOrigin: "top center",
             transform: `translateX(-50%) rotate(${
@@ -30,15 +30,15 @@ export function SpinLever({ onClick, isSpinning = false }: SpinLeverProps) {
           className="group"
         >
           {/* Lever Stick */}
-          <div className="w-2 h-40 bg-gray-900 rounded-full group-hover:bg-gray-700 transition-colors" />
+          <div className="w-4 h-60 bg-gray-900 rounded-full group-hover:bg-gray-700 transition-colors" />
 
           {/* Handle */}
-          <div className="absolute -left-3 bottom-0 w-8 h-8 bg-red-500 rounded-full group-hover:bg-red-400 transition-colors" />
+          <div className="absolute -left-5 bottom-0 w-14 h-14 bg-red-500 rounded-full group-hover:bg-red-400 transition-colors" />
         </div>
       </div>
 
       {/* Button */}
-      <button
+      {/* <Button
         onClick={onClick}
         disabled={isSpinning}
         className={`
@@ -47,12 +47,12 @@ export function SpinLever({ onClick, isSpinning = false }: SpinLeverProps) {
           ${
             isSpinning
               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-              : "bg-gray-900 text-white hover:bg-gray-800"
+              : "bg-blue-500 text-white hover:bg-blue-600"
           }
         `}
       >
-        {isSpinning ? "Spinning..." : "Pull Lever"}
-      </button>
+        {isSpinning ? "Spinning..." : "Spin"}
+      </Button> */}
     </div>
   );
 }
