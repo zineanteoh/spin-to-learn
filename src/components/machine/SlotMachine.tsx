@@ -6,6 +6,7 @@ import { ItemProp } from "@/lib/utils";
 import { Button } from "@/shadcn-ui/button";
 import { useCallback, useMemo, useState } from "react";
 import SpinResult from "../SpinResult";
+import { useRouter } from "next/navigation";
 
 export const SLOT_MACHINE_N_REELS = 3;
 export const SLOT_MACHINE_SPIN_DURATION = 2000;
@@ -18,15 +19,14 @@ export function SlotMachine({
   whatChoices,
   howChoices,
   onSpin,
-  onSpinEnd,
 }: {
   isLoading: boolean;
   whoChoices: ItemProp[];
   whatChoices: ItemProp[];
   howChoices: ItemProp[];
   onSpin?: (selectedItems: ItemProp[]) => void;
-  onSpinEnd?: () => void;
 }) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [chosenWho, setChosenWho] = useState<ItemProp | null>(null);
@@ -81,7 +81,6 @@ export function SlotMachine({
       setWho(shuffleWho());
       setWhat(shuffleWhat());
       setHow(shuffleHow());
-      onSpinEnd?.();
       setIsModalOpen(true);
     }, maxDuration + 1000); // extra 1.5 seconds to let the reels settle
     return () => clearTimeout(timeout);
@@ -98,7 +97,6 @@ export function SlotMachine({
     setChosenWhat,
     setChosenHow,
     onSpin,
-    onSpinEnd,
     setWho,
     setWhat,
     setHow,
@@ -113,7 +111,19 @@ export function SlotMachine({
           who={chosenWho}
           what={chosenWhat}
           how={chosenHow}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => {
+            setIsModalOpen(false);
+            // navigate to conversation page
+            const spinId = localStorage.getItem("spinId");
+            if (spinId) {
+              // decode it because there is %22 or something in the id
+              const decodedSpinId = decodeURIComponent(spinId).replaceAll(
+                '"',
+                ""
+              );
+              router.push(`/spin/${decodedSpinId}/conversation/new`);
+            }
+          }}
         />
       )}
       <div className="flex p-8 gap-4 min-w-[30rem] min-h-[20rem] lg:min-w-[40rem] lg:min-h-[30rem]">

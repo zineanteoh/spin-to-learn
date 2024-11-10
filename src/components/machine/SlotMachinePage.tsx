@@ -4,7 +4,7 @@ import { fetchData, ItemProp, parseSpinResult, Spin } from "@/lib/utils";
 import { SpinInsert } from "@/utils/supabase-utils";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
-
+import { useRouter } from "next/navigation";
 type SlotItem = {
   emoji: string;
   description: string;
@@ -17,6 +17,7 @@ type SlotData = {
 };
 
 export function SlotMachinePage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [slotData, setSlotData] = useState<SlotData | null>(null);
   const [spinResult, setSpinResult] = useState<Spin | null>(null);
@@ -52,10 +53,8 @@ export function SlotMachinePage() {
 
     const spin = parseSpinResult(result);
 
-    console.log("spinResult", spin);
-    // TODO: this is causing animation to break
-    // setSpinResult(spin);
-    // setIsModalOpen(true);
+    // 1 million IQ way to overcome react
+    localStorage.setItem("spinId", JSON.stringify(spin.id));
   }, []);
 
   return (
@@ -68,18 +67,8 @@ export function SlotMachinePage() {
           whatChoices={slotData.what}
           howChoices={slotData.how}
           onSpin={handleSpin}
-          // onSpinEnd={() => setIsModalOpen(true)}
         />
       )}
-      {/* {isModalOpen && spinResult && (
-        <SpinResult
-          id={spinResult.id}
-          who={spinResult.who}
-          what={spinResult.what}
-          how={spinResult.how}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )} */}
       <Button
         onClick={fetchSlots}
         disabled={isLoading}

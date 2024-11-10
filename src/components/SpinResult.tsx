@@ -63,13 +63,7 @@ export default function SpinResult({
           >
             Spin Again
           </Button>
-          <Button
-            className="w-full"
-            onClick={() => {
-              onClose?.();
-              // TODO: start chat with the result
-            }}
-          >
+          <Button className="w-full" onClick={() => onClose?.()}>
             Start Chatting
           </Button>
         </div>

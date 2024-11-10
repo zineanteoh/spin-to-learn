@@ -59,7 +59,24 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
                 Built at HackPrinceton 2024
               </CardTitle>
               <CardDescription className="text-xs">
-                Created by Rachel Koh & Zi Teoh
+                by{" "}
+                <a
+                  href="https://www.linkedin.com/in/kohrh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-red-400"
+                >
+                  Rachel Koh
+                </a>{" "}
+                &{" "}
+                <a
+                  href="https://www.linkedin.com/in/zineanteoh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400"
+                >
+                  Zi Nean Teoh
+                </a>
               </CardDescription>
             </div>
           </CardHeader>

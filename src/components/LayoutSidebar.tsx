@@ -159,13 +159,11 @@ export function LayoutSidebar({
                         <Link href={`/spin/${spin.id}/conversation/${id}`}>
                           <div className="flex items-center justify-center">
                             <span className="flex items-center gap-2 truncate text-lg">
-                              <span className="flex-shrink-0 text-xl">
-                                {spin.who.emoji}
-                                {spin.what.emoji}
+                              <span className="flex-shrink-0 text-sm">
+                                {spin.who.emoji} {spin.who.description}{" "}
+                                {spin.what.emoji} {spin.what.description}{" "}
                                 {spin.how.emoji}
-                              </span>
-                              <span className="truncate">
-                                {createScenario(spin)}
+                                {spin.how.description}
                               </span>
                             </span>
                           </div>
