@@ -4,7 +4,6 @@ import { fetchData, ItemProp, parseSpinResult, Spin } from "@/lib/utils";
 import { SpinInsert } from "@/utils/supabase-utils";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
-import SpinResult from "../SpinResult";
 
 type SlotItem = {
   emoji: string;
