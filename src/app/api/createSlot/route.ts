@@ -3,6 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import { SupabaseClient } from "@supabase/supabase-js";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   const body = await request.json();
 
@@ -27,7 +29,7 @@ export async function POST(request: Request) {
   }
 
   // run without async
-  generateInitialMessage(spin.id, supabase, {
+  await generateInitialMessage(spin.id, supabase, {
     who: who.description,
     what: what.description,
     how: how.description,
