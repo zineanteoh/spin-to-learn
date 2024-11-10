@@ -14,14 +14,12 @@ export function SlotReel({
   slots,
   // how long the reel will spin for
   spinDuration,
-  isLoading,
 }: {
   choices: ItemProp[];
   isSpinning: boolean;
   chosenItem: ItemProp | null;
   slots: ItemProp[];
   spinDuration: number;
-  isLoading: boolean;
 }) {
   // calculate the position to land on, by filtering out the extra batches
   const targetPosition = useMemo(() => {
@@ -58,19 +56,9 @@ export function SlotReel({
             : undefined,
         }}
       >
-        {isLoading ? (
-          <>
-            {Array.from({ length: 3 }).map((_, index) => (
-              <SlotWrapper key={index}>
-                <Loader2 className="w-8 h-8 animate-spin" />
-              </SlotWrapper>
-            ))}
-          </>
-        ) : (
-          slots.map((item, index) => (
-            <SlotWrapper key={index}>{item.emoji}</SlotWrapper>
-          ))
-        )}
+        {slots.map((item, index) => (
+          <SlotWrapper key={index}>{item.emoji}</SlotWrapper>
+        ))}
       </div>
     </div>
   );

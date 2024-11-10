@@ -2,9 +2,9 @@
 import { SlotMachine } from "@/components/machine/SlotMachine";
 import { fetchData, ItemProp, parseSpinResult, Spin } from "@/lib/utils";
 import { SpinInsert } from "@/utils/supabase-utils";
+import { useRouter } from "next/navigation";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
-import { useRouter } from "next/navigation";
 type SlotItem = {
   emoji: string;
   description: string;
@@ -19,6 +19,7 @@ type SlotData = {
 export function SlotMachinePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
   const [slotData, setSlotData] = useState<SlotData | null>(null);
   const [spinResult, setSpinResult] = useState<Spin | null>(null);
   const [showSpinResult, setShowSpinResult] = useState(false);
@@ -33,10 +34,10 @@ export function SlotMachinePage() {
   }, []);
 
   const fetchSlots = useCallback(async () => {
-    setIsLoading(true);
+    setIsRegenerating(true);
     const data: SlotData = await fetchData("/api/slots");
     setSlotData(data);
-    setIsLoading(false);
+    setIsRegenerating(false);
   }, []);
 
   const handleSpin = useCallback(async (chosenItems: ItemProp[]) => {
@@ -63,6 +64,7 @@ export function SlotMachinePage() {
         <SlotMachine
           key={JSON.stringify(slotData.who.map((item) => item.emoji))}
           isLoading={isLoading}
+          isRegenerating={isRegenerating}
           whoChoices={slotData.who}
           whatChoices={slotData.what}
           howChoices={slotData.how}
@@ -71,10 +73,10 @@ export function SlotMachinePage() {
       )}
       <Button
         onClick={fetchSlots}
-        disabled={isLoading}
+        disabled={isRegenerating}
         className="px-4 py-2 bg-blue-500 text-white rounded-lg sm:px-3 sm:py-1"
       >
-        {isLoading ? "Regenerating..." : "Regenerate Slots"}
+        {isRegenerating ? "Regenerating..." : "Regenerate Slots"}
       </Button>
     </Fragment>
   );

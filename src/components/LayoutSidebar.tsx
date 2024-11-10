@@ -1,7 +1,8 @@
 "use client";
 
 import { NavUser } from "@/components/NavUser";
-import { parseSpinResult, Spin } from "@/lib/utils";
+import { useSidebar } from "@/context/SidebarContext";
+import { Spin } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,
@@ -28,58 +29,27 @@ import { useEffect, useState } from "react";
 export function LayoutSidebar({
   ...props
 }: React.ComponentProps<typeof ShadcnSidebar>) {
+  const { spins, conversations } = useSidebar();
   const [user, setUser] = useState<{
     id: string;
     name: string;
     email: string;
   }>();
-  const [spins, setSpins] = useState<Spin[]>([]);
-  const [conversations, setConversations] = useState<
-    { id: string; spin: Spin }[]
-  >([]);
 
   useEffect(() => {
     (async () => {
       const supabase = await createClientSupabase();
-
       const {
         data: { user },
       } = await supabase.auth.getUser();
-
       if (!user) {
         return;
       }
-
       setUser({
         id: user.id,
         name: user.email ?? "",
         email: user.email ?? "",
       });
-
-      const [{ data: spins }, { data: conversations }] = await Promise.all([
-        supabase
-          .from("spins")
-          .select("*")
-          .not("ai_initial_message", "is", null)
-          .eq("creator_id", user.id)
-          .order("created_at", { ascending: false }),
-        supabase
-          .from("conversations")
-          .select("id,spin:spins!inner(*)")
-          .eq("creator_id", user.id)
-          .order("created_at", { ascending: false }),
-      ]);
-
-      const spinResults = spins?.map(parseSpinResult);
-      const conversationResults = conversations?.map((convo) => {
-        const spin = parseSpinResult(convo.spin);
-        return {
-          id: convo.id,
-          spin,
-        };
-      });
-      setSpins(spinResults ?? []);
-      setConversations(conversationResults ?? []);
     })();
   }, []);
 

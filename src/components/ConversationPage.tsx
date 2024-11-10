@@ -1,6 +1,7 @@
 "use client";
 
 import { LayoutContainer } from "@/components/LayoutContainer";
+import { useSidebar } from "@/context/SidebarContext";
 import { fetchStream, Spin } from "@/lib/utils";
 import { BreadcrumbPage } from "@/shadcn-ui/breadcrumb";
 import { Button } from "@/shadcn-ui/button";
@@ -10,7 +11,6 @@ import {
   MessageParam,
   TextBlockParam,
 } from "@anthropic-ai/sdk/resources/index.mjs";
-import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 export function ConversationPage({
@@ -27,7 +27,7 @@ export function ConversationPage({
   convoId?: string;
   initialMessages?: MessageParam[];
 }) {
-  const router = useRouter();
+  const { refreshConversations } = useSidebar();
   const [messages, setMessages] = useState<MessageParam[]>(initialMessages);
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +76,7 @@ export function ConversationPage({
     if (messages.length === 1) {
       const conversation = await createConversation(id);
       await saveAIInitialMessage(conversation?.id ?? "");
+      await refreshConversations();
       if (!conversation) throw new Error("Failed to create conversation");
       conversationId = conversation.id;
       window.history.replaceState(

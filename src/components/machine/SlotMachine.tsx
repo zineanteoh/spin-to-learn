@@ -1,6 +1,7 @@
 "use client";
 
 import { SlotReel } from "@/components/machine/SlotReel";
+import { useSidebar } from "@/context/SidebarContext";
 import { useAudioHook } from "@/hooks/useAudioHook";
 import { useSlotMachineHook } from "@/hooks/useSlotMachineHook";
 import { ItemProp } from "@/lib/utils";
@@ -16,18 +17,21 @@ export const SLOT_MACHINE_EXTRA_BATCHES = 3; // extra batches appened to the end
 
 export function SlotMachine({
   isLoading,
+  isRegenerating,
   whoChoices,
   whatChoices,
   howChoices,
   onSpin,
 }: {
   isLoading: boolean;
+  isRegenerating: boolean;
   whoChoices: ItemProp[];
   whatChoices: ItemProp[];
   howChoices: ItemProp[];
   onSpin?: (selectedItems: ItemProp[]) => void;
 }) {
   const router = useRouter();
+  const { refreshSpins } = useSidebar();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [chosenWho, setChosenWho] = useState<ItemProp | null>(null);
@@ -98,6 +102,10 @@ export function SlotMachine({
       setIsModalOpen(true);
       stopSound("spin");
       playSound("jukebox", "megaWin");
+
+      (async () => {
+        await refreshSpins();
+      })();
     }, maxDuration + 1000); // extra 1 second to let the reels settle
     return () => clearTimeout(timeout);
   }, [
@@ -119,6 +127,7 @@ export function SlotMachine({
     setIsModalOpen,
     playSound,
     stopSound,
+    refreshSpins,
   ]);
 
   return (
@@ -151,7 +160,6 @@ export function SlotMachine({
         {/* TODO: implement illusion of infinite spin */}
         <SlotReel
           choices={whoChoices}
-          isLoading={isLoading}
           isSpinning={isSpinning}
           chosenItem={chosenWho}
           slots={who}
@@ -159,7 +167,6 @@ export function SlotMachine({
         />
         <SlotReel
           choices={whatChoices}
-          isLoading={isLoading}
           isSpinning={isSpinning}
           chosenItem={chosenWhat}
           slots={what}
@@ -167,7 +174,6 @@ export function SlotMachine({
         />
         <SlotReel
           choices={howChoices}
-          isLoading={isLoading}
           isSpinning={isSpinning}
           chosenItem={chosenHow}
           slots={how}
