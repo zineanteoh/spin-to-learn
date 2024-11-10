@@ -1,37 +1,89 @@
 "use client";
 
 import { LayoutContainer } from "@/components/LayoutContainer";
-import { fetchStream, ItemProp, parseSpinResult } from "@/lib/utils";
+import { fetchStream, Spin } from "@/lib/utils";
 import { BreadcrumbPage } from "@/shadcn-ui/breadcrumb";
 import { Button } from "@/shadcn-ui/button";
 import { Textarea } from "@/shadcn-ui/textarea";
+import { createClientSupabase } from "@/utils/supabase/client";
 import {
   MessageParam,
   TextBlockParam,
 } from "@anthropic-ai/sdk/resources/index.mjs";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useCallback, useState } from "react";
 
 export function ConversationPage({
-  spin: { who, what, how, ai_initial_message },
-}: {
-  spin: {
-    who: ItemProp;
-    what: ItemProp;
-    how: ItemProp;
-    ai_initial_message: string;
-  };
-}) {
-  const [messages, setMessages] = useState<MessageParam[]>(() => [
+  spin: { id, who, what, how, ai_initial_message },
+  convoId,
+  initialMessages = [
     {
       role: "assistant",
-      content: ai_initial_message,
-    } as MessageParam,
-  ]);
+      content: ai_initial_message ?? "",
+    },
+  ],
+}: {
+  spin: Spin;
+  convoId?: string;
+  initialMessages?: MessageParam[];
+}) {
+  const router = useRouter();
+  const [messages, setMessages] = useState<MessageParam[]>(initialMessages);
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const createConversation = useCallback(async (spinId: string) => {
+    const supabase = await createClientSupabase();
+
+    const { data: conversation } = await supabase
+      .from("conversations")
+      .insert({ spin_id: spinId })
+      .select("*")
+      .single();
+    return conversation;
+  }, []);
+
+  const saveAIInitialMessage = useCallback(
+    async (conversationId: string) => {
+      const supabase = await createClientSupabase();
+      await supabase.from("messages").insert({
+        content: ai_initial_message ?? "",
+        conversation_id: conversationId,
+      });
+    },
+    [ai_initial_message]
+  );
+
+  const saveMessages = useCallback(
+    async (conversationId: string, message: string) => {
+      const supabase = await createClientSupabase();
+      const { data: user } = await supabase.auth.getUser();
+      const { error } = await supabase.from("messages").insert({
+        creator_id: user?.user?.id,
+        content: message,
+        conversation_id: conversationId,
+      });
+      return error;
+    },
+    []
+  );
+
   const handleSend = async () => {
     if (input.trim() === "") return;
+
+    // create a conversation if this is the first message
+    let conversationId: string | null = null;
+    if (messages.length === 1) {
+      const conversation = await createConversation(id);
+      await saveAIInitialMessage(conversation?.id ?? "");
+      if (!conversation) throw new Error("Failed to create conversation");
+      conversationId = conversation.id;
+      window.history.replaceState(
+        null,
+        "",
+        `/spin/${id}/conversation/${conversation.id}`
+      );
+    }
 
     // Add user message
     const userMessage: MessageParam = { role: "user", content: input.trim() };
@@ -39,10 +91,14 @@ export function ConversationPage({
     setMessages(newMessages);
     setInput(""); // Clear input field
 
+    // save the messages to db
+    await saveMessages(conversationId ?? convoId ?? "", input.trim());
+
     setIsLoading(true);
 
     const stream = await fetchStream("/api/conversation", {
       messages: newMessages,
+      conversationId: conversationId ?? convoId ?? "",
       who: who.description,
       what: what.description,
       how: how.description,
@@ -54,7 +110,7 @@ export function ConversationPage({
     // Add a placeholder message for the assistant's response
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
     // read the stream + update the messages
-    processStream(reader, setMessages);
+    await processStream(reader, setMessages);
 
     setIsLoading(false);
   };
@@ -167,4 +223,5 @@ async function processStream(
       }
     }
   }
+  return accumulatedContent;
 }

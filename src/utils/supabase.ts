@@ -11,24 +11,64 @@ export type Database = {
     Tables: {
       conversations: {
         Row: {
-          ai_initial_message: string | null
           created_at: string
-          id: number
-          spin_id: number | null
+          creator_id: string | null
+          id: string
+          spin_id: string | null
         }
         Insert: {
-          ai_initial_message?: string | null
           created_at?: string
-          id?: number
-          spin_id?: number | null
+          creator_id?: string | null
+          id?: string
+          spin_id?: string | null
         }
         Update: {
-          ai_initial_message?: string | null
           created_at?: string
-          id?: number
-          spin_id?: number | null
+          creator_id?: string | null
+          id?: string
+          spin_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "conversations_spin_id_fkey"
+            columns: ["spin_id"]
+            isOneToOne: false
+            referencedRelation: "spins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string | null
+          conversation_id: string
+          created_at: string
+          creator_id: string | null
+          id: string
+        }
+        Insert: {
+          content?: string | null
+          conversation_id: string
+          created_at?: string
+          creator_id?: string | null
+          id?: string
+        }
+        Update: {
+          content?: string | null
+          conversation_id?: string
+          created_at?: string
+          creator_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       spins: {
         Row: {
@@ -60,17 +100,17 @@ export type Database = {
       users: {
         Row: {
           created_at: string
-          id: number
+          id: string
           name: string | null
         }
         Insert: {
           created_at?: string
-          id?: number
+          id?: string
           name?: string | null
         }
         Update: {
           created_at?: string
-          id?: number
+          id?: string
           name?: string | null
         }
         Relationships: []

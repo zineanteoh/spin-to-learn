@@ -14,28 +14,27 @@ import {
   useSidebar,
 } from "@/shadcn-ui/sidebar";
 import { createClientSupabase } from "@/utils/supabase/client";
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, Link, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
+import { Card, CardHeader, CardTitle, CardDescription } from "@/shadcn-ui/card";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+interface NavUserProps {
+  name: string;
+  email: string;
+  avatar: string;
+}
+
+export function NavUser({ name, email, avatar }: NavUserProps) {
   const { isMobile } = useSidebar();
   const router = useRouter();
   const initials = useMemo(
     () =>
-      user.name
+      name
         .split(" ")
         .map((n) => n[0])
         .join(""),
-    [user.name]
+    [name]
   );
 
   const handleLogout = useCallback(async () => {
@@ -48,6 +47,23 @@ export function NavUser({
   return (
     <SidebarMenu>
       <SidebarMenuItem>
+        <Card className="shadow-none border-gray-200 bg-transparent mb-2">
+          <CardHeader className="p-4 pt-1 pb-2 flex flex-row items-center gap-3 justify-center">
+            <img
+              src="/hackprinceton.png"
+              alt="HackPrinceton"
+              className="h-8 w-8 object-contain"
+            />
+            <div className="flex flex-col items-center justify-center">
+              <CardTitle className="text-sm">
+                Built at HackPrinceton 2024
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Created by Rachel Koh & Zi Teoh
+              </CardDescription>
+            </div>
+          </CardHeader>
+        </Card>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
@@ -55,14 +71,14 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={avatar} alt={name} />
                 <AvatarFallback className="rounded-lg">
                   {initials}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{name}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -73,10 +89,12 @@ export function NavUser({
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            {name !== "Guest" && (
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

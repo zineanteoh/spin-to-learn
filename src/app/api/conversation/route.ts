@@ -1,3 +1,4 @@
+import { createServerSupabase } from "@/utils/supabase/server";
 import { Anthropic } from "@anthropic-ai/sdk";
 import { TextDelta } from "@anthropic-ai/sdk/resources/index.mjs";
 
@@ -20,8 +21,10 @@ export async function POST(request: Request) {
       apiKey: process.env.ANTHROPIC_API_KEY,
     });
 
+    const supabase = await createServerSupabase();
+
     // Get all the messages up until this point
-    const { messages, who, what, how } = await request.json();
+    const { messages, who, what, how, conversationId } = await request.json();
 
     // Get the next message
     const anthropicStream = await anthropic.messages.stream({
@@ -35,11 +38,14 @@ export async function POST(request: Request) {
       messages: messages,
     });
 
+    let completeMessage = "";
+
     // Start processing the stream
     (async () => {
       for await (const event of anthropicStream) {
         if (event.type === "content_block_delta") {
           const text = (event.delta as TextDelta).text;
+          completeMessage += text;
           // Write each chunk to the stream
           await writer.write(
             encoder.encode(`data: ${JSON.stringify({ text })}\n\n`)
@@ -49,6 +55,15 @@ export async function POST(request: Request) {
 
       // Close the stream when done
       await writer.close();
+
+      // save the message to the database
+      const { error } = await supabase.from("messages").insert({
+        content: completeMessage,
+        conversation_id: conversationId,
+      });
+      if (error) {
+        console.error("Error saving message to database", error);
+      }
     })();
 
     // Return the stream with appropriate headers
