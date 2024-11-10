@@ -37,10 +37,15 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
   const fetchAllSpins = useCallback(
     async (supabase: SupabaseClient<Database>) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return [];
       const { data: spins } = await supabase
         .from("spins")
         .select("*")
         .not("ai_initial_message", "is", null)
+        .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
       return spins?.map(parseSpinResult) ?? [];
     },
@@ -49,9 +54,14 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 
   const fetchAllConversations = useCallback(
     async (supabase: SupabaseClient<Database>) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user) return [];
       const { data: conversations } = await supabase
         .from("conversations")
         .select("id,spin:spins!inner(*)")
+        .eq("creator_id", user.id)
         .order("created_at", { ascending: false });
       if (!conversations) return [];
       return conversations.map((convo) => ({
