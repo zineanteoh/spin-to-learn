@@ -2,15 +2,6 @@ import { SpinInsert } from "@/utils/supabase-utils";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export type PageProps<P extends string = string, S extends string = string> = {
-  params: {
-    [key in P]: string | undefined;
-  };
-  searchParams: {
-    [key in S]: string | undefined;
-  };
-};
-
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

@@ -1,12 +1,14 @@
 import { ConversationPage } from "@/components/ConversationPage";
-import { PageProps, parseSpinResult } from "@/lib/utils";
+import { parseSpinResult } from "@/lib/utils";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { MessageParam } from "@anthropic-ai/sdk/resources/messages.mjs";
 import { redirect } from "next/navigation";
 
 export default async function Page({
   params,
-}: PageProps<"spinId" | "conversationId">) {
+}: {
+  params: { spinId: string | undefined; conversationId: string | undefined };
+}) {
   const { spinId, conversationId } = await params;
 
   if (!spinId || !conversationId) {

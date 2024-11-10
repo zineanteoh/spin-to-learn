@@ -1,9 +1,13 @@
 import { ConversationPage } from "@/components/ConversationPage";
-import { PageProps, parseSpinResult } from "@/lib/utils";
+import { parseSpinResult } from "@/lib/utils";
 import { createServerSupabase } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
-export default async function Page({ params }: PageProps<"spinId">) {
+export default async function Page({
+  params,
+}: {
+  params: { spinId: string | undefined };
+}) {
   const { spinId } = await params;
   const supabase = await createServerSupabase();
 
