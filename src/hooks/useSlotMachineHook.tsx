@@ -1,9 +1,7 @@
 import { useCallback } from "react";
 
-import {
-  ItemProp,
-  SLOT_MACHINE_EXTRA_BATCHES,
-} from "@/components/machine/SlotMachine";
+import { SLOT_MACHINE_EXTRA_BATCHES } from "@/components/machine/SlotMachine";
+import { ItemProp } from "@/lib/utils";
 
 export function useSlotMachineHook({
   choices,

@@ -1,8 +1,7 @@
 "use client";
-import { ItemProp, SlotMachine } from "@/components/machine/SlotMachine";
-import SpinResult, { SpinResultProps } from "@/components/SpinResult";
-import { fetchData, parseSpinResult } from "@/lib/utils";
-import { Spin } from "@/utils/supabase-utils";
+import { SlotMachine } from "@/components/machine/SlotMachine";
+import { fetchData, ItemProp, parseSpinResult, Spin } from "@/lib/utils";
+import { SpinInsert } from "@/utils/supabase-utils";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
 
@@ -27,7 +26,7 @@ const DUMMY = {
 export function SlotMachinePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [slotData, setSlotData] = useState<SlotData | null>(null);
-  const [spinResult, setSpinResult] = useState<SpinResultProps | null>(null);
+  const [spinResult, setSpinResult] = useState<Spin | null>(null);
   const [showSpinResult, setShowSpinResult] = useState(false);
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export function SlotMachinePage() {
   const handleSpin = useCallback(async (chosenItems: ItemProp[]) => {
     console.log("chosenItems", chosenItems);
 
-    const result = await fetchData<Spin>("/api/createSlot", {
+    const result = await fetchData<SpinInsert>("/api/createSlot", {
       method: "POST",
       body: JSON.stringify({
         who: chosenItems[0],

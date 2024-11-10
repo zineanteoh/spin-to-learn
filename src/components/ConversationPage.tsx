@@ -41,7 +41,12 @@ export function ConversationPage({
 
     setIsLoading(true);
 
-    const stream = await fetchStream("/api/conversation", newMessages);
+    const stream = await fetchStream("/api/conversation", {
+      messages: newMessages,
+      who: who.description,
+      what: what.description,
+      how: how.description,
+    });
     const reader = stream?.getReader();
 
     if (!reader) throw new Error("No reader available");

@@ -1,11 +1,7 @@
 import { ItemProp } from "@/lib/utils";
 import { Button } from "./shadcn-ui/button";
-
-export interface SpinResultProps {
-  id: string;
-  who: ItemProp;
-  what: ItemProp;
-  how: ItemProp;
+import { Spin } from "@/lib/utils";
+export interface SpinResultProps extends Spin {
   onClose?: () => void;
 }
 

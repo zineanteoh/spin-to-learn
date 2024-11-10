@@ -2,6 +2,7 @@
 
 import { SlotReel } from "@/components/machine/SlotReel";
 import { useSlotMachineHook } from "@/hooks/useSlotMachineHook";
+import { ItemProp } from "@/lib/utils";
 import { Button } from "@/shadcn-ui/button";
 import { useCallback, useMemo, useState } from "react";
 
@@ -9,11 +10,6 @@ export const SLOT_MACHINE_N_REELS = 3;
 export const SLOT_MACHINE_SPIN_DURATION = 2000;
 export const SLOT_MACHINE_DURATION_OFFSET = 500;
 export const SLOT_MACHINE_EXTRA_BATCHES = 3; // extra batches appened to the end to ensure users will never see the end of the reel
-
-export interface ItemProp {
-  emoji: string;
-  description: string;
-}
 
 export function SlotMachine({
   isLoading,

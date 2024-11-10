@@ -1,7 +1,5 @@
-import {
-  ItemProp,
-  SLOT_MACHINE_EXTRA_BATCHES,
-} from "@/components/machine/SlotMachine";
+import { SLOT_MACHINE_EXTRA_BATCHES } from "@/components/machine/SlotMachine";
+import { ItemProp } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
 

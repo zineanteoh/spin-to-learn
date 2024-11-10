@@ -1,4 +1,4 @@
-import { Spin } from "@/utils/supabase-utils";
+import { SpinInsert } from "@/utils/supabase-utils";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -62,13 +62,15 @@ export type ItemProp = {
   description: string;
 };
 
-export function parseSpinResult(spin: Spin): {
+export type Spin = {
   id: string;
   who: ItemProp;
   what: ItemProp;
   how: ItemProp;
   ai_initial_message: string;
-} {
+};
+
+export function parseSpinResult(spin: SpinInsert): Spin {
   // Parse JSONB data
   const who = typeof spin.who === "string" ? JSON.parse(spin.who) : spin.who;
   const what =
