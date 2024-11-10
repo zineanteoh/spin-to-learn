@@ -18,6 +18,7 @@ import { ChevronsUpDown, Link, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo } from "react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/shadcn-ui/card";
+import { Button } from "@/shadcn-ui/button";
 
 interface NavUserProps {
   name: string;
@@ -47,6 +48,12 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
 
   return (
     <SidebarMenu>
+      <SidebarMenuItem>
+        <Button className="w-full" onClick={() => router.push("/")}>
+          🎰 Spin Again! 🎰
+        </Button>
+      </SidebarMenuItem>
+
       <SidebarMenuItem>
         <Card className="shadow-none border-gray-200 bg-transparent mb-2">
           <CardHeader className="p-4 pt-1 pb-2 flex flex-row items-center gap-3 justify-center">
@@ -82,6 +89,8 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
             </div>
           </CardHeader>
         </Card>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton

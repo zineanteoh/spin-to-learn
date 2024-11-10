@@ -35,6 +35,9 @@ export function LayoutSidebar({
     name: string;
     email: string;
   }>();
+  const [activeTab, setActiveTab] = useState<"conversations" | "spins">(
+    "conversations"
+  );
 
   useEffect(() => {
     (async () => {
@@ -74,74 +77,89 @@ export function LayoutSidebar({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu className="gap-2">
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <div className="font-medium">Past Spins</div>
-              </SidebarMenuButton>
-              {spins.length ? (
-                <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
-                  <div className="border border-sidebar-border rounded-md">
-                    <div className="max-h-[18rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
-                      <div className="grid grid-cols-1 divide-x divide-y divide-sidebar-border">
-                        {spins.map((spin) => (
-                          <SidebarMenuSubItem key={spin.id} className="p-1">
-                            <SidebarMenuSubButton asChild>
-                              <SpinHoverCard spin={spin}>
-                                <Link href={`/spin/${spin.id}`}>
-                                  <div className="flex items-center justify-center">
-                                    <span className="truncate text-2xl">
-                                      {spin.who.emoji}
-                                      {spin.what.emoji}
-                                      {spin.how.emoji}
-                                    </span>
-                                  </div>
-                                </Link>
-                              </SpinHoverCard>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </SidebarMenuSub>
-              ) : (
-                <div className="px-1.5 text-xs text-sidebar-secondary">
-                  Start spinning to create your first conversation!
-                </div>
-              )}
+          {/* Tabs Navigation */}
+          <div className="flex border-b border-gray-200">
+            <button
+              className={`flex-1 py-2 px-4 text-sm font-medium ${
+                activeTab === "conversations"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("conversations")}
+            >
+              Conversations
+            </button>
+            <button
+              className={`flex-1 py-2 px-4 text-sm font-medium ${
+                activeTab === "spins"
+                  ? "border-b-2 border-blue-500 text-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => setActiveTab("spins")}
+            >
+              Past Spins
+            </button>
+          </div>
 
-              <SidebarMenuButton asChild>
-                <div className="font-medium">Conversations</div>
-              </SidebarMenuButton>
-              {conversations.length ? (
-                <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+          {/* Tab Content */}
+          <div className="mt-4">
+            {activeTab === "conversations" ? (
+              conversations.length ? (
+                <div className="space-y-2 px-4">
                   {conversations.map(({ id, spin }, index) => (
-                    <SidebarMenuSubItem key={index}>
-                      <SidebarMenuSubButton asChild>
-                        <Link href={`/spin/${spin.id}/conversation/${id}`}>
-                          <div className="flex items-center justify-center">
-                            <span className="flex items-center gap-2 truncate text-lg">
-                              <span className="flex-shrink-0 text-sm">
-                                {spin.who.emoji} {spin.who.description}{" "}
-                                {spin.what.emoji} {spin.what.description}{" "}
-                                {spin.how.emoji}
-                                {spin.how.description}
-                              </span>
+                    <SpinHoverCard key={index} spin={spin}>
+                      <Link href={`/spin/${spin.id}/conversation/${id}`}>
+                        <div className="flex items-center p-2 hover:bg-gray-100 rounded-md">
+                          <span className="flex items-center gap-2 w-full">
+                            <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full text-xs font-medium text-blue-600">
+                              {index + 1}
                             </span>
-                          </div>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
+                            <span className="truncate text-2xl">
+                              {spin.who.emoji}
+                              {spin.what.emoji}
+                              {spin.how.emoji}
+                            </span>
+                          </span>
+                        </div>
+                      </Link>
+                    </SpinHoverCard>
                   ))}
-                </SidebarMenuSub>
+                </div>
               ) : (
-                <div className="px-1.5 text-xs text-sidebar-secondary">
+                <div className="text-xs text-sidebar-secondary p-4 text-center">
                   You haven&apos;t had any conversations yet.
                 </div>
-              )}
-            </SidebarMenuItem>
-          </SidebarMenu>
+              )
+            ) : // Past Spins Tab Content
+            spins.length ? (
+              <div className="max-h-[calc(100vh-16rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
+                <div className="space-y-2 px-4">
+                  {spins.map((spin, index) => (
+                    <SpinHoverCard key={spin.id} spin={spin}>
+                      <Link href={`/spin/${spin.id}`}>
+                        <div className="flex items-center p-2 hover:bg-gray-100 rounded-md">
+                          <span className="flex items-center gap-2 w-full">
+                            <span className="flex-shrink-0 w-6 h-6 flex items-center justify-center bg-blue-100 rounded-full text-xs font-medium text-blue-600">
+                              {index + 1}
+                            </span>
+                            <span className="truncate text-2xl">
+                              {spin.who.emoji}
+                              {spin.what.emoji}
+                              {spin.how.emoji}
+                            </span>
+                          </span>
+                        </div>
+                      </Link>
+                    </SpinHoverCard>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="text-xs text-sidebar-secondary p-4 text-center">
+                Start spinning to create your first conversation!
+              </div>
+            )}
+          </div>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
@@ -163,7 +181,7 @@ function SpinHoverCard({
   children: React.ReactNode;
 }) {
   return (
-    <HoverCard>
+    <HoverCard openDelay={100} closeDelay={0}>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
       <HoverCardPrimitive.Portal>
         <HoverCardContent
