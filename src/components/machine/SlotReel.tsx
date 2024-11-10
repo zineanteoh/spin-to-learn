@@ -70,7 +70,17 @@ export function SlotReel({
 function SlotWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="bg-yellow-200 rounded-lg text-center flex items-center justify-center font-bold text-4xl shadow-inner"
+      className={`rounded-lg text-center flex items-center justify-center font-bold text-4xl shadow-inner ${
+        [
+          "bg-red-100",
+          "bg-blue-100",
+          "bg-green-100",
+          "bg-purple-100",
+          "bg-yellow-100",
+          "bg-pink-100",
+          "bg-orange-100",
+        ][Math.floor(Math.random() * 7)]
+      }`}
       style={{ height: "8rem", width: "8rem" }}
     >
       {children}
