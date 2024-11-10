@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 export default async function Page({
   params,
 }: {
-  params: { spinId: string | undefined };
+  params: Promise<{ spinId: string | undefined }>;
 }) {
   const { spinId } = await params;
   const supabase = await createServerSupabase();

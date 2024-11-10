@@ -7,7 +7,10 @@ import { redirect } from "next/navigation";
 export default async function Page({
   params,
 }: {
-  params: { spinId: string | undefined; conversationId: string | undefined };
+  params: Promise<{
+    spinId: string | undefined;
+    conversationId: string | undefined;
+  }>;
 }) {
   const { spinId, conversationId } = await params;
 
