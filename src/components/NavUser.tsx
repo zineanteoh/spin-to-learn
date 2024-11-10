@@ -65,7 +65,7 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
                   href="https://www.linkedin.com/in/kohrh"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-red-400"
+                  className="text-green-600"
                 >
                   Rachel Koh
                 </a>{" "}

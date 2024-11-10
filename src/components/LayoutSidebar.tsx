@@ -107,9 +107,7 @@ export function LayoutSidebar({
           <SidebarMenu className="gap-2">
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="/" className="font-medium">
-                  Past Spins
-                </Link>
+                <div className="font-medium">Past Spins</div>
               </SidebarMenuButton>
               {spins.length ? (
                 <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
@@ -144,9 +142,7 @@ export function LayoutSidebar({
               )}
 
               <SidebarMenuButton asChild>
-                <Link href="/conversation" className="font-medium">
-                  Conversations
-                </Link>
+                <div className="font-medium">Conversations</div>
               </SidebarMenuButton>
               {conversations.length ? (
                 <SidebarMenuSub className="ml-0 border-l-0 px-1.5">

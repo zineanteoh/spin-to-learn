@@ -4,6 +4,10 @@ import confetti from "canvas-confetti";
 import { useEffect } from "react";
 
 export interface SpinResultProps extends Spin {
+  onStartChat?: () => void;
+}
+
+export interface SpinResultProps extends Spin {
   onClose?: () => void;
 }
 
@@ -24,6 +28,7 @@ export default function SpinResult({
   what,
   how,
   onClose,
+  onStartChat,
 }: SpinResultProps) {
   useEffect(() => {
     fireConfetti();
@@ -69,7 +74,12 @@ export default function SpinResult({
           >
             Spin Again
           </Button>
-          <Button className="w-full" onClick={() => onClose?.()}>
+          <Button
+            className="w-full"
+            onClick={() => {
+              onStartChat?.();
+            }}
+          >
             Start Chatting
           </Button>
         </div>

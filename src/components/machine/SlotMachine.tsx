@@ -98,7 +98,7 @@ export function SlotMachine({
       setIsModalOpen(true);
       stopSound("spin");
       playSound("jukebox", "megaWin");
-    }, maxDuration + 1000); // extra 1.5 seconds to let the reels settle
+    }, maxDuration + 1000); // extra 1 second to let the reels settle
     return () => clearTimeout(timeout);
   }, [
     whoChoices,
@@ -130,6 +130,9 @@ export function SlotMachine({
           what={chosenWhat}
           how={chosenHow}
           onClose={() => {
+            setIsModalOpen(false);
+          }}
+          onStartChat={() => {
             setIsModalOpen(false);
             // navigate to conversation page
             const spinId = localStorage.getItem("spinId");
