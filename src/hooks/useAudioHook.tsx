@@ -30,6 +30,7 @@ export const useAudioHook = () => {
       }),
       jukebox: new Howl({
         src: ["/audio/jukebox.mp3"],
+        volume: 0.1,
         sprite: {
           betChange: [0, 1050],
           bigWin: [1100, 2000],
@@ -58,11 +59,12 @@ export const useAudioHook = () => {
 
     if (sprite && audio.jukebox) {
       audio.jukebox.play(sprite);
+      audio.jukebox.volume(0.1);
     } else {
       switch (soundType) {
         case "spin":
           audio.spin?.play();
-          audio.spin?.volume(0.2);
+          audio.spin?.volume(0.1);
           break;
         case "background":
           audio.background?.play();
