@@ -1,6 +1,6 @@
 import "@/app/globals.css";
+import { LayoutSidebar } from "@/components/LayoutSidebar";
 import { SidebarProvider } from "@/components/shadcn-ui/sidebar";
-import { Sidebar } from "@/components/Sidebar";
 import type { Metadata } from "next";
 import { CSSProperties } from "react";
 
@@ -20,7 +20,7 @@ export default function RootLayout({
         <SidebarProvider
           style={{ "--sidebar-width": "19rem" } as CSSProperties}
         >
-          <Sidebar />
+          <LayoutSidebar />
           {children}
         </SidebarProvider>
       </body>

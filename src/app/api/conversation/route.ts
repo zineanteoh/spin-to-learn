@@ -1,5 +1,5 @@
 import { Anthropic } from "@anthropic-ai/sdk";
-import { NextResponse, NextRequest } from "next/server";
+import { TextDelta } from "@anthropic-ai/sdk/resources/index.mjs";
 
 const WHO = "Hachiko";
 const WHAT = "abacus math";
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     (async () => {
       for await (const event of anthropicStream) {
         if (event.type === "content_block_delta") {
-          const text = event.delta.text;
+          const text = (event.delta as TextDelta).text;
           // Write each chunk to the stream
           await writer.write(
             encoder.encode(`data: ${JSON.stringify({ text })}\n\n`)

@@ -1,8 +1,12 @@
 import { Anthropic } from "@anthropic-ai/sdk";
+import { ToolUseBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import { NextResponse } from "next/server";
 
+// generate 6 choices for each reel
+const MAX_CHOICES = 6;
+
 /**
- * Generate a WHO, WHAT, and HOW.
+ * Regenerates 6 WHOs, WHATs, and HOWs. For the initial slots, see initial_slots/route.ts
  * @param request
  * @returns
  */
@@ -33,7 +37,14 @@ export async function GET(request: Request) {
     🐷📈🏘️ The Three Little Pigs are teaching about real estate by analyzing their houses' cost-benefit ratios during wolf attacks.
     🧒🏻📺🌪️ Dorothy from Oz is teaching about how color TVs work by analyzing tornado patterns.
     🧛‍♂️🩸🦇 Count Dracula is teaching about blood types while conducting a blood bank inventory.
-    🧝‍♀️🌿🏹 Legolas is teaching about photosynthesis while practicing archery in the forest.`;
+    🧝‍♀️🌿🏹 Legolas is teaching about photosynthesis while practicing archery in the forest.
+    👾📏🧩 Pac-Man is teaching about shortest path algorithms by navigating mazes.
+    🐶🌉🧀 Wallace & Gromit are teaching about engineering by building a cheese machine.
+    👸🏻📠🏭 Queen Victoria is teaching about the Industrial Revolution by managing a Roblox factory simulator.
+    👨🏻‍🦳🎨💹 Warren Buffett is teaching about Renaissance art through the stock market.
+    👱🏻‍♂️🎉😜 Andy Warhol is teaching about pop art by creating social media memes.
+    🥷🏻🌍💰 Carmen Sandiego is teaching about world geography by planning her next heist.
+    👵🏻🧍🏻‍♂️☕ Violet Crawley is teaching about the patriarchy during an elegant high tea gala.`;
 
   const msg = await anthropic.messages.create({
     model: "claude-3-5-sonnet-20241022",
@@ -42,7 +53,7 @@ export async function GET(request: Request) {
     tools: [
       {
         name: "slot_generator",
-        description: "Generate 10 WHOs, WHATs, and HOWs.",
+        description: "Generate 6 WHOs, WHATs, and HOWs.",
         input_schema: {
           type: "object",
           properties: {
@@ -61,8 +72,8 @@ export async function GET(request: Request) {
                 required: ["emoji", "description"],
               },
               description: "An array of WHO objects.",
-              minItems: 10,
-              maxItems: 10,
+              minItems: MAX_CHOICES,
+              maxItems: MAX_CHOICES,
             },
             what: {
               type: "array",
@@ -79,8 +90,8 @@ export async function GET(request: Request) {
                 required: ["emoji", "description"],
               },
               description: "An array of WHAT objects describing topics.",
-              minItems: 10,
-              maxItems: 10,
+              minItems: 6,
+              maxItems: 6,
             },
             how: {
               type: "array",
@@ -97,8 +108,8 @@ export async function GET(request: Request) {
                 required: ["emoji", "description"],
               },
               description: "An array of HOW objects.",
-              minItems: 10,
-              maxItems: 10,
+              minItems: 6,
+              maxItems: 6,
             },
           },
           required: ["who", "what", "how"],
@@ -112,12 +123,11 @@ export async function GET(request: Request) {
         content:
           `You are given the following examples of conversation scenarios. Each scenario is made up of three parts: a WHO, a WHAT, and a HOW.
             Each part is described by an emoji and a short description. For example, 🐶🧮🦴 means WHO: dog, WHAT: abacus math, and HOW: while gnawing on a bone.
-            Based on the following examples, generate 10 new WHOs, 10 new WHATs, and 10 new HOWs. Your response should be a JSON object with three arrays: who, what, and how. Each array should contain 10 objects with emoji and description properties.
+            Based on the following examples, generate 6 new WHOs, 6 new WHATs, and 6 new HOWs. Your response should be a JSON object with three arrays: who, what, and how. Each array should contain 10 objects with emoji and description properties.
             Be creative, diverse, and concise. Here are the examples:` +
           `${exampleTitles}`,
       },
     ],
   });
-  console.log(JSON.stringify(msg, null, 2)); // TODO: remove
-  return NextResponse.json(msg.content[0].input);
+  return NextResponse.json((msg.content[0] as ToolUseBlock).input);
 }

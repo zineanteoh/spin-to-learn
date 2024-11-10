@@ -1,23 +1,17 @@
 "use client";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/shadcn-ui/breadcrumb";
+import { LayoutContainer } from "@/components/LayoutContainer";
+import { fetchStream } from "@/lib/utils";
+import { BreadcrumbPage } from "@/shadcn-ui/breadcrumb";
 import { Button } from "@/shadcn-ui/button";
-import { Separator } from "@/shadcn-ui/separator";
-import { SidebarInset, SidebarTrigger } from "@/shadcn-ui/sidebar";
 import { Textarea } from "@/shadcn-ui/textarea";
 import {
   MessageParam,
   TextBlockParam,
 } from "@anthropic-ai/sdk/resources/index.mjs";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
-// TODO fetch this from database
-
+// TODO: fetch this from database to have a dynamic lesson
 const emoji = "🐶 🧮 🦴";
 const WHO = "Hachiko";
 const WHAT = "abacus math";
@@ -45,79 +39,28 @@ export default function Page() {
     setInput(""); // Clear input field
 
     setIsLoading(true);
-    try {
-      const response = await fetch("/api/conversation", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newMessages),
-      });
 
-      if (!response.ok) throw new Error("Failed to fetch response");
+    const stream = await fetchStream("/api/conversation", newMessages);
+    const reader = stream?.getReader();
 
-      // Get the response as a readable stream
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error("No reader available");
+    if (!reader) throw new Error("No reader available");
 
-      // Add a placeholder message for the assistant's response
-      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+    // Add a placeholder message for the assistant's response
+    setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+    // read the stream + update the messages
+    processStream(reader, setMessages);
 
-      // Read the stream
-      let accumulatedContent = "";
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        // Decode and parse the chunk
-        const chunk = new TextDecoder().decode(value);
-        const lines = chunk.split("\n");
-
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              // Concatenate the new text instead of replacing
-              accumulatedContent += data.text || "";
-
-              // Update the last message with accumulated content
-              setMessages((prev) => {
-                const newMessages = [...prev];
-                newMessages[newMessages.length - 1] = {
-                  role: "assistant",
-                  content: accumulatedContent,
-                };
-                return newMessages;
-              });
-            } catch (e) {
-              console.error("Error parsing JSON:", e);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      // Optionally handle error in UI
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(false);
   };
 
   return (
-    <SidebarInset>
-      <header className="flex h-16 shrink-0 items-center gap-2 px-4">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mr-2 h-4" />
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbPage>
-                {emoji} {WHO} is teaching you about {WHAT} {HOW}
-              </BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-      </header>
+    <LayoutContainer
+      breadcrumb={
+        <BreadcrumbPage>
+          {emoji} {WHO} is teaching you about {WHAT} {HOW}
+        </BreadcrumbPage>
+      }
+    >
       <div className="flex flex-col h-[calc(100vh-4rem)]">
         <div className="flex-1 overflow-y-auto p-4">
           <div className="space-y-4">
@@ -151,7 +94,7 @@ export default function Page() {
         </div>
         <div className="flex-shrink-0 border-t bg-background shadow-lg z-10">
           <div className="p-4">
-            <div className="grid w-full gap-2">
+            <div className="flex gap-3 items-end">
               <Textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -163,7 +106,7 @@ export default function Page() {
                 }}
                 placeholder="Type a message..."
                 disabled={isLoading}
-                className="min-h-[2.8em] max-h-[20em]"
+                className="flex-1 h-[2.9em] min-h-[2.9em] max-h-[20em]"
               />
               <Button
                 onClick={handleSend}
@@ -176,6 +119,43 @@ export default function Page() {
           </div>
         </div>
       </div>
-    </SidebarInset>
+    </LayoutContainer>
   );
+}
+
+async function processStream(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  setMessages: Dispatch<SetStateAction<MessageParam[]>>
+) {
+  let accumulatedContent = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    // Decode and parse the chunk
+    const chunk = new TextDecoder().decode(value);
+    const lines = chunk.split("\n");
+
+    for (const line of lines) {
+      if (line.startsWith("data: ")) {
+        try {
+          const data = JSON.parse(line.slice(6));
+          // Concatenate the new text instead of replacing
+          accumulatedContent += data.text || "";
+
+          // Update the last message with accumulated content
+          setMessages((prev) => {
+            const newMessages = [...prev];
+            newMessages[newMessages.length - 1] = {
+              role: "assistant",
+              content: accumulatedContent,
+            };
+            return newMessages;
+          });
+        } catch (e) {
+          console.error("Error parsing JSON:", e);
+        }
+      }
+    }
+  }
 }
