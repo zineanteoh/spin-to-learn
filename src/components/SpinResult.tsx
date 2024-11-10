@@ -1,6 +1,6 @@
-import { ItemProp } from "@/lib/utils";
-import { Button } from "./shadcn-ui/button";
 import { Spin } from "@/lib/utils";
+import { Button } from "./shadcn-ui/button";
+
 export interface SpinResultProps extends Spin {
   onClose?: () => void;
 }

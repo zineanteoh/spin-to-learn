@@ -88,3 +88,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes spin {
+  from {
+    transform: translateY(-8rem); /* Start from centered position */
+  }
+  to {
+    transform: translateY(-16rem); /* Move up one full slot */
+  }
+}
+
+.spinning {
+  animation: spin var(--spin-duration) cubic-bezier(0.2, 0.1, 0.8, 1);
+  animation-fill-mode: forwards;
+}

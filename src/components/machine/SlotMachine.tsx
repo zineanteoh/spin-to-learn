@@ -5,6 +5,7 @@ import { useSlotMachineHook } from "@/hooks/useSlotMachineHook";
 import { ItemProp } from "@/lib/utils";
 import { Button } from "@/shadcn-ui/button";
 import { useCallback, useMemo, useState } from "react";
+import SpinResult from "../SpinResult";
 
 export const SLOT_MACHINE_N_REELS = 3;
 export const SLOT_MACHINE_SPIN_DURATION = 2000;
@@ -26,6 +27,7 @@ export function SlotMachine({
   onSpin?: (selectedItems: ItemProp[]) => void;
   onSpinEnd?: () => void;
 }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [chosenWho, setChosenWho] = useState<ItemProp | null>(null);
   const [chosenWhat, setChosenWhat] = useState<ItemProp | null>(null);
@@ -80,7 +82,8 @@ export function SlotMachine({
       setWhat(shuffleWhat());
       setHow(shuffleHow());
       onSpinEnd?.();
-    }, maxDuration + 1500); // extra 1.5 seconds to let the reels settle
+      setIsModalOpen(true);
+    }, maxDuration + 1000); // extra 1.5 seconds to let the reels settle
     return () => clearTimeout(timeout);
   }, [
     whoChoices,
@@ -99,10 +102,20 @@ export function SlotMachine({
     setWho,
     setWhat,
     setHow,
+    setIsModalOpen,
   ]);
 
   return (
     <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min flex items-center justify-center">
+      {isModalOpen && chosenWho && chosenWhat && chosenHow && (
+        <SpinResult
+          id={""}
+          who={chosenWho}
+          what={chosenWhat}
+          how={chosenHow}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
       <div className="flex p-8 gap-4 min-w-[30rem] min-h-[20rem] lg:min-w-[40rem] lg:min-h-[30rem]">
         {/* TODO: implement illusion of infinite spin */}
         <SlotReel

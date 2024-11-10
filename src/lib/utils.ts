@@ -67,7 +67,7 @@ export type Spin = {
   who: ItemProp;
   what: ItemProp;
   how: ItemProp;
-  ai_initial_message: string;
+  ai_initial_message?: string;
 };
 
 export function parseSpinResult(spin: SpinInsert): Spin {

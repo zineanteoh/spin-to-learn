@@ -4,6 +4,7 @@ import { fetchData, ItemProp, parseSpinResult, Spin } from "@/lib/utils";
 import { SpinInsert } from "@/utils/supabase-utils";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
+import SpinResult from "../SpinResult";
 
 type SlotItem = {
   emoji: string;
@@ -14,13 +15,6 @@ type SlotData = {
   who: SlotItem[];
   what: SlotItem[];
   how: SlotItem[];
-};
-
-const DUMMY = {
-  id: "1",
-  who: { emoji: "👩", description: "a friend" },
-  what: { emoji: "🎸", description: "guitar" },
-  how: { emoji: "🎉", description: "at a party" },
 };
 
 export function SlotMachinePage() {
@@ -57,11 +51,12 @@ export function SlotMachinePage() {
       }),
     });
 
-    const spinResult = parseSpinResult(result);
+    const spin = parseSpinResult(result);
 
-    console.log("spinResult", spinResult);
+    console.log("spinResult", spin);
     // TODO: this is causing animation to break
-    setSpinResult(spinResult);
+    // setSpinResult(spin);
+    // setIsModalOpen(true);
   }, []);
 
   return (
@@ -74,10 +69,18 @@ export function SlotMachinePage() {
           whatChoices={slotData.what}
           howChoices={slotData.how}
           onSpin={handleSpin}
-          // onSpinEnd={() => setShowSpinResult(true)}
+          // onSpinEnd={() => setIsModalOpen(true)}
         />
       )}
-      {/* {showSpinResult && <SpinResult />} */}
+      {/* {isModalOpen && spinResult && (
+        <SpinResult
+          id={spinResult.id}
+          who={spinResult.who}
+          what={spinResult.what}
+          how={spinResult.how}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )} */}
       <Button
         onClick={fetchSlots}
         disabled={isLoading}
