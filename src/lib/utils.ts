@@ -85,3 +85,7 @@ export function parseSpinResult(spin: SpinInsert): Spin {
     ai_initial_message: spin.ai_initial_message ?? "",
   };
 }
+
+export function createScenario(spin: Spin) {
+  return `${spin.who.description} is teaching you about ${spin.what.description} ${spin.how.description}`;
+}

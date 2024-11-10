@@ -14,7 +14,7 @@ export default async function App() {
 
   return (
     <LayoutContainer
-      breadcrumb={<BreadcrumbPage>Spin To Learn</BreadcrumbPage>}
+      breadcrumb={<BreadcrumbPage>🎰 Spin To Learn</BreadcrumbPage>}
     >
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         <SlotMachinePage />

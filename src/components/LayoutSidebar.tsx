@@ -1,7 +1,7 @@
 "use client";
 
 import { NavUser } from "@/components/NavUser";
-import { parseSpinResult, Spin } from "@/lib/utils";
+import { createScenario, parseSpinResult, Spin } from "@/lib/utils";
 import {
   Sidebar as ShadcnSidebar,
   SidebarContent,
@@ -53,7 +53,7 @@ export function LayoutSidebar({
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Spin to Learn!</span>
-                  <span className="">See all your past spins</span>
+                  <span className="">Click here to spin!</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -65,18 +65,24 @@ export function LayoutSidebar({
           <SidebarMenu className="gap-2">
             <SidebarMenuItem>
               <SidebarMenuButton asChild>
-                <Link href="/conversation" className="font-medium">
-                  Conversations
+                <Link href="/" className="font-medium">
+                  Past Spins
                 </Link>
               </SidebarMenuButton>
               {spins.length ? (
-                <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
+                <SidebarMenuSub className="ml-0 border-l-0 px-1.5 max-h-[12.5rem] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 hover:scrollbar-thumb-gray-400">
                   {spins.map((spin) => (
                     <SidebarMenuSubItem key={spin.id}>
                       <SidebarMenuSubButton asChild>
-                        <a href={`/conversation/${spin.id}`}>
-                          {spin.ai_initial_message}
-                        </a>
+                        <Link href={`/spin/${spin.id}`}>
+                          <div className="flex items-center gap-2">
+                            <span className="truncate text-xs text-muted-foreground">
+                              {spin.who.emoji}
+                              {spin.what.emoji}
+                              {spin.how.emoji} {createScenario(spin)}
+                            </span>
+                          </div>
+                        </Link>
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                   ))}
@@ -87,6 +93,12 @@ export function LayoutSidebar({
                 </div>
               )}
 
+              {/* TODO:  */}
+              <SidebarMenuButton asChild>
+                <Link href="/conversation" className="font-medium">
+                  Conversations
+                </Link>
+              </SidebarMenuButton>
               {conversations.length ? (
                 <SidebarMenuSub className="ml-0 border-l-0 px-1.5">
                   {conversations.map((conversation) => (
