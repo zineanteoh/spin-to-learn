@@ -1,5 +1,7 @@
 import { Spin } from "@/lib/utils";
 import { Button } from "./shadcn-ui/button";
+import confetti from "canvas-confetti";
+import { useEffect } from "react";
 
 export interface SpinResultProps extends Spin {
   onClose?: () => void;
@@ -23,6 +25,10 @@ export default function SpinResult({
   how,
   onClose,
 }: SpinResultProps) {
+  useEffect(() => {
+    fireConfetti();
+  }, []);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 divide-y divide-gray-200">
@@ -70,4 +76,48 @@ export default function SpinResult({
       </div>
     </div>
   );
+}
+
+function fireConfetti() {
+  const count = 200;
+  const defaults = {
+    origin: { y: 0.7 },
+    zIndex: 100,
+  };
+
+  function fire(particleRatio: number, opts: confetti.Options) {
+    confetti({
+      ...defaults,
+      ...opts,
+      particleCount: Math.floor(count * particleRatio),
+    });
+  }
+
+  // Fire multiple bursts of confetti
+  fire(0.25, {
+    spread: 26,
+    startVelocity: 55,
+  });
+
+  fire(0.2, {
+    spread: 60,
+  });
+
+  fire(0.35, {
+    spread: 100,
+    decay: 0.91,
+    scalar: 0.8,
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 25,
+    decay: 0.92,
+    scalar: 1.2,
+  });
+
+  fire(0.1, {
+    spread: 120,
+    startVelocity: 45,
+  });
 }
