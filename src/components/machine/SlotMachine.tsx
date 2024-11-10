@@ -129,6 +129,9 @@ export function SlotMachine({
   return (
     <div className="min-h-[100vh] flex flex-1 items-center justify-center min-h-min bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg">
       <div className="bg-white p-12 rounded-3xl shadow-xl">
+        <h1 className="text-5xl font-bold text-center mb-6 text-purple-600">
+          Spin to learn!
+        </h1>
         {isModalOpen && chosenWho && chosenWhat && chosenHow && (
           <SpinResult
             id={""}
@@ -152,7 +155,7 @@ export function SlotMachine({
           />
         )}
         <div className="flex items-center gap-8">
-          <div className="flex p-8 gap-4">
+          <div className="flex p-8 gap-4 rounded-lg">
             <SlotReel
               choices={whoChoices}
               isSpinning={isSpinning}

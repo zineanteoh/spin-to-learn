@@ -63,7 +63,7 @@ export function LayoutSidebar({
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground text-lg">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground text-lg">
                   🎰
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
