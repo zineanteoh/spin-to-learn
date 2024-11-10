@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { TextBlock } from "@anthropic-ai/sdk/resources/index.mjs";
 import { NextResponse } from "next/server";
 
 /**
@@ -35,6 +36,5 @@ export async function GET(request: Request) {
       },
     ],
   });
-  console.log(msg); // TODO: remove
-  return NextResponse.json({ message: msg.content[0].text });
+  return NextResponse.json({ message: (msg.content[0] as TextBlock).text });
 }

@@ -10,9 +10,12 @@ export function capitalize(str: string) {
 }
 
 // helper function to fetch data
-export async function fetchData<T>(url: string): Promise<T> {
+export async function fetchData<T>(
+  url: string,
+  options?: RequestInit
+): Promise<T> {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, options);
     if (!response.ok) throw new Error("Failed to fetch data");
     return response.json();
   } catch (error) {
