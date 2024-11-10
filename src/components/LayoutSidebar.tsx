@@ -29,15 +29,12 @@ import { useEffect, useState } from "react";
 export function LayoutSidebar({
   ...props
 }: React.ComponentProps<typeof ShadcnSidebar>) {
-  const { spins, conversations } = useSidebar();
+  const { spins, conversations, activeTab, setActiveTab } = useSidebar();
   const [user, setUser] = useState<{
     id: string;
     name: string;
     email: string;
   }>();
-  const [activeTab, setActiveTab] = useState<"conversations" | "spins">(
-    "conversations"
-  );
 
   useEffect(() => {
     (async () => {

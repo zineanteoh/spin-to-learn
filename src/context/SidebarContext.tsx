@@ -6,6 +6,8 @@ import { createClientSupabase } from "@/utils/supabase/client";
 import { SupabaseClient } from "@supabase/supabase-js";
 import {
   createContext,
+  Dispatch,
+  SetStateAction,
   useCallback,
   useContext,
   useEffect,
@@ -18,6 +20,8 @@ interface SidebarContextType {
   refreshSidebarData: () => Promise<void>;
   refreshSpins: () => Promise<void>;
   refreshConversations: () => Promise<void>;
+  activeTab: "conversations" | "spins";
+  setActiveTab: Dispatch<SetStateAction<"conversations" | "spins">>;
 }
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -27,6 +31,9 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [conversations, setConversations] = useState<
     { id: string; spin: Spin }[]
   >([]);
+  const [activeTab, setActiveTab] = useState<"conversations" | "spins">(
+    "conversations"
+  );
 
   const fetchAllSpins = useCallback(
     async (supabase: SupabaseClient<Database>) => {
@@ -96,6 +103,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
         refreshSidebarData,
         refreshSpins,
         refreshConversations,
+        activeTab,
+        setActiveTab,
       }}
     >
       {children}

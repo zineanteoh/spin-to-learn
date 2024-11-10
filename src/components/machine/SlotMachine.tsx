@@ -27,7 +27,7 @@ export function SlotMachine({
   onSpin?: (selectedItems: ItemProp[]) => void;
 }) {
   const router = useRouter();
-  const { refreshSpins } = useSidebar();
+  const { refreshSpins, setActiveTab } = useSidebar();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
   const [chosenWho, setChosenWho] = useState<ItemProp | null>(null);
@@ -98,6 +98,7 @@ export function SlotMachine({
       setIsModalOpen(true);
       stopSound("spin");
       playSound("jukebox", "megaWin");
+      setActiveTab("spins");
 
       (async () => {
         await refreshSpins();

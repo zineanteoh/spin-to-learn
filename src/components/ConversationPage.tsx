@@ -27,7 +27,7 @@ export function ConversationPage({
   convoId?: string;
   initialMessages?: MessageParam[];
 }) {
-  const { refreshConversations } = useSidebar();
+  const { refreshConversations, setActiveTab } = useSidebar();
   const [messages, setMessages] = useState<MessageParam[]>(initialMessages);
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -75,6 +75,7 @@ export function ConversationPage({
     let conversationId: string | null = null;
     if (messages.length === 1) {
       const conversation = await createConversation(id);
+      setActiveTab("conversations");
       await saveAIInitialMessage(conversation?.id ?? "");
       await refreshConversations();
       if (!conversation) throw new Error("Failed to create conversation");
