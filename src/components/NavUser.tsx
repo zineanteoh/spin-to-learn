@@ -50,7 +50,7 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
     <SidebarMenu>
       <SidebarMenuItem>
         <Button className="w-full" onClick={() => router.push("/")}>
-          🎰 Spin Again! 🎰
+          🎰 Click here to spin! 🎰
         </Button>
       </SidebarMenuItem>
 

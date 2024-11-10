@@ -16,15 +16,11 @@ export const SLOT_MACHINE_DURATION_OFFSET = 500;
 export const SLOT_MACHINE_EXTRA_BATCHES = 3; // extra batches appened to the end to ensure users will never see the end of the reel
 
 export function SlotMachine({
-  isLoading,
-  isRegenerating,
   whoChoices,
   whatChoices,
   howChoices,
   onSpin,
 }: {
-  isLoading: boolean;
-  isRegenerating: boolean;
   whoChoices: ItemProp[];
   whatChoices: ItemProp[];
   howChoices: ItemProp[];
@@ -131,56 +127,57 @@ export function SlotMachine({
   ]);
 
   return (
-    <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min flex items-center justify-center">
-      {isModalOpen && chosenWho && chosenWhat && chosenHow && (
-        <SpinResult
-          id={""}
-          who={chosenWho}
-          what={chosenWhat}
-          how={chosenHow}
-          onClose={() => {
-            setIsModalOpen(false);
-          }}
-          onStartChat={() => {
-            setIsModalOpen(false);
-            // navigate to conversation page
-            const spinId = localStorage.getItem("spinId");
-            if (spinId) {
-              // decode it because there is %22 or something in the id
-              const decodedSpinId = decodeURIComponent(spinId).replaceAll(
-                '"',
-                ""
-              );
-              router.push(`/spin/${decodedSpinId}/conversation/new`);
-            }
-          }}
-        />
-      )}
-      <div className="flex p-8 gap-4">
-        {/* TODO: implement illusion of infinite spin */}
-        <SlotReel
-          choices={whoChoices}
-          isSpinning={isSpinning}
-          chosenItem={chosenWho}
-          slots={who}
-          spinDuration={spinDurations[0]}
-        />
-        <SlotReel
-          choices={whatChoices}
-          isSpinning={isSpinning}
-          chosenItem={chosenWhat}
-          slots={what}
-          spinDuration={spinDurations[1]}
-        />
-        <SlotReel
-          choices={howChoices}
-          isSpinning={isSpinning}
-          chosenItem={chosenHow}
-          slots={how}
-          spinDuration={spinDurations[2]}
-        />
+    <div className="min-h-[100vh] flex flex-1 items-center justify-center min-h-min bg-gradient-to-r from-pink-200 to-purple-200 rounded-lg">
+      <div className="bg-white p-12 rounded-3xl shadow-xl">
+        {isModalOpen && chosenWho && chosenWhat && chosenHow && (
+          <SpinResult
+            id={""}
+            who={chosenWho}
+            what={chosenWhat}
+            how={chosenHow}
+            onClose={() => {
+              setIsModalOpen(false);
+            }}
+            onStartChat={() => {
+              setIsModalOpen(false);
+              const spinId = localStorage.getItem("spinId");
+              if (spinId) {
+                const decodedSpinId = decodeURIComponent(spinId).replaceAll(
+                  '"',
+                  ""
+                );
+                router.push(`/spin/${decodedSpinId}/conversation/new`);
+              }
+            }}
+          />
+        )}
+        <div className="flex items-center gap-8">
+          <div className="flex p-8 gap-4">
+            <SlotReel
+              choices={whoChoices}
+              isSpinning={isSpinning}
+              chosenItem={chosenWho}
+              slots={who}
+              spinDuration={spinDurations[0]}
+            />
+            <SlotReel
+              choices={whatChoices}
+              isSpinning={isSpinning}
+              chosenItem={chosenWhat}
+              slots={what}
+              spinDuration={spinDurations[1]}
+            />
+            <SlotReel
+              choices={howChoices}
+              isSpinning={isSpinning}
+              chosenItem={chosenHow}
+              slots={how}
+              spinDuration={spinDurations[2]}
+            />
+          </div>
+          <SpinLever onClick={handleSpinClick} isSpinning={isSpinning} />
+        </div>
       </div>
-      <SpinLever onClick={handleSpinClick} isSpinning={isSpinning} />
     </div>
   );
 }

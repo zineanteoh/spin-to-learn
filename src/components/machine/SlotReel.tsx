@@ -1,6 +1,5 @@
 import { SLOT_MACHINE_EXTRA_BATCHES } from "@/components/machine/SlotMachine";
 import { ItemProp } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
 import { useMemo } from "react";
 
 export function SlotReel({
@@ -21,6 +20,10 @@ export function SlotReel({
   slots: ItemProp[];
   spinDuration: number;
 }) {
+  const SLOT_HEIGHT = 8; // in rem
+  const SLOT_GAP = 1; // in rem
+  const TOTAL_SLOT_HEIGHT = SLOT_HEIGHT + SLOT_GAP; // in rem
+
   // calculate the position to land on, by filtering out the extra batches
   const targetPosition = useMemo(() => {
     if (!chosenItem) return 0;
@@ -39,17 +42,17 @@ export function SlotReel({
     <div
       className="flex flex-col overflow-y-auto"
       style={{
-        height: "calc(3 * 8rem)",
+        height: `${3 * TOTAL_SLOT_HEIGHT}rem`,
         userSelect: "none",
         scrollbarWidth: "none",
         pointerEvents: "none",
       }}
     >
       <div
-        className="flex flex-col"
+        className="flex flex-col gap-4"
         style={{
           transform: isSpinning
-            ? `translateY(-${(targetPosition - 1) * 8}rem)`
+            ? `translateY(-${(targetPosition - 1) * TOTAL_SLOT_HEIGHT}rem)`
             : undefined,
           transition: isSpinning
             ? `transform ${spinDuration}ms cubic-bezier(0.2, 0.1, 0.8, 1)`
@@ -67,7 +70,7 @@ export function SlotReel({
 function SlotWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="border-2 text-center flex items-center justify-center font-bold text-4xl"
+      className="bg-yellow-200 rounded-lg text-center flex items-center justify-center font-bold text-4xl shadow-inner"
       style={{ height: "8rem", width: "8rem" }}
     >
       {children}

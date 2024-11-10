@@ -63,8 +63,6 @@ export function SlotMachinePage() {
       {slotData && (
         <SlotMachine
           key={JSON.stringify(slotData.who.map((item) => item.emoji))}
-          isLoading={isLoading}
-          isRegenerating={isRegenerating}
           whoChoices={slotData.who}
           whatChoices={slotData.what}
           howChoices={slotData.how}
