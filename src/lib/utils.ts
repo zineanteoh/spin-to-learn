@@ -1,5 +1,15 @@
+import { Spin } from "@/utils/supabase-utils";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+
+export type PageProps<P extends string = string, S extends string = string> = {
+  params: {
+    [key in P]: string | undefined;
+  };
+  searchParams: {
+    [key in S]: string | undefined;
+  };
+};
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -45,4 +55,31 @@ export async function fetchStream<T>(
     console.error("Error fetching stream:", error);
     return null;
   }
+}
+
+export type ItemProp = {
+  emoji: string;
+  description: string;
+};
+
+export function parseSpinResult(spin: Spin): {
+  id: string;
+  who: ItemProp;
+  what: ItemProp;
+  how: ItemProp;
+  ai_initial_message: string;
+} {
+  // Parse JSONB data
+  const who = typeof spin.who === "string" ? JSON.parse(spin.who) : spin.who;
+  const what =
+    typeof spin.what === "string" ? JSON.parse(spin.what) : spin.what;
+  const how = typeof spin.how === "string" ? JSON.parse(spin.how) : spin.how;
+
+  return {
+    id: spin.id ?? "",
+    who: who as ItemProp,
+    what: what as ItemProp,
+    how: how as ItemProp,
+    ai_initial_message: spin.ai_initial_message ?? "",
+  };
 }

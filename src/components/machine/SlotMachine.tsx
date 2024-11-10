@@ -21,12 +21,14 @@ export function SlotMachine({
   whatChoices,
   howChoices,
   onSpin,
+  onSpinEnd,
 }: {
   isLoading: boolean;
   whoChoices: ItemProp[];
   whatChoices: ItemProp[];
   howChoices: ItemProp[];
   onSpin?: (selectedItems: ItemProp[]) => void;
+  onSpinEnd?: () => void;
 }) {
   const [isSpinning, setIsSpinning] = useState(false);
   const [chosenWho, setChosenWho] = useState<ItemProp | null>(null);
@@ -81,6 +83,7 @@ export function SlotMachine({
       setWho(shuffleWho());
       setWhat(shuffleWhat());
       setHow(shuffleHow());
+      onSpinEnd?.();
     }, maxDuration + 1500); // extra 1.5 seconds to let the reels settle
     return () => clearTimeout(timeout);
   }, [
@@ -96,6 +99,7 @@ export function SlotMachine({
     setChosenWhat,
     setChosenHow,
     onSpin,
+    onSpinEnd,
     setWho,
     setWhat,
     setHow,

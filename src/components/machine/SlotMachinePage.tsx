@@ -1,7 +1,9 @@
 "use client";
 import { ItemProp, SlotMachine } from "@/components/machine/SlotMachine";
-import { fetchData } from "@/lib/utils";
-import { useCallback, useEffect, useState } from "react";
+import SpinResult, { SpinResultProps } from "@/components/SpinResult";
+import { fetchData, parseSpinResult } from "@/lib/utils";
+import { Spin } from "@/utils/supabase-utils";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Button } from "../shadcn-ui/button";
 
 type SlotItem = {
@@ -15,9 +17,18 @@ type SlotData = {
   how: SlotItem[];
 };
 
+const DUMMY = {
+  id: "1",
+  who: { emoji: "👩", description: "a friend" },
+  what: { emoji: "🎸", description: "guitar" },
+  how: { emoji: "🎉", description: "at a party" },
+};
+
 export function SlotMachinePage() {
   const [isLoading, setIsLoading] = useState(false);
   const [slotData, setSlotData] = useState<SlotData | null>(null);
+  const [spinResult, setSpinResult] = useState<SpinResultProps | null>(null);
+  const [showSpinResult, setShowSpinResult] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -38,7 +49,7 @@ export function SlotMachinePage() {
   const handleSpin = useCallback(async (chosenItems: ItemProp[]) => {
     console.log("chosenItems", chosenItems);
 
-    const spinId = await fetchData<string>("/api/createSlot", {
+    const result = await fetchData<Spin>("/api/createSlot", {
       method: "POST",
       body: JSON.stringify({
         who: chosenItems[0],
@@ -47,11 +58,15 @@ export function SlotMachinePage() {
       }),
     });
 
-    console.log("spinId", spinId);
+    const spinResult = parseSpinResult(result);
+
+    console.log("spinResult", spinResult);
+    // TODO: this is causing animation to break
+    setSpinResult(spinResult);
   }, []);
 
   return (
-    <>
+    <Fragment>
       {slotData && (
         <SlotMachine
           key={JSON.stringify(slotData.who.map((item) => item.emoji))}
@@ -60,8 +75,10 @@ export function SlotMachinePage() {
           whatChoices={slotData.what}
           howChoices={slotData.how}
           onSpin={handleSpin}
+          // onSpinEnd={() => setShowSpinResult(true)}
         />
       )}
+      {/* {showSpinResult && <SpinResult />} */}
       <Button
         onClick={fetchSlots}
         disabled={isLoading}
@@ -69,6 +86,6 @@ export function SlotMachinePage() {
       >
         {isLoading ? "Regenerating..." : "Regenerate Slots"}
       </Button>
-    </>
+    </Fragment>
   );
 }

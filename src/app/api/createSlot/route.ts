@@ -17,21 +17,21 @@ export async function POST(request: Request) {
       what: JSON.stringify(what),
       how: JSON.stringify(how),
     })
-    .select("id");
+    .select("*");
 
-  const id = data?.[0].id;
-  if (!id) {
+  const spin = data?.[0];
+  if (!spin) {
     return Response.json({ error: "Failed to create slot" }, { status: 500 });
   }
 
   // run without async
-  generateInitialMessage(id, supabase, {
+  generateInitialMessage(spin.id, supabase, {
     who: who.description,
     what: what.description,
     how: how.description,
   });
 
-  return Response.json({ id });
+  return Response.json(spin);
 }
 
 // generate initial message and save to supabase without async
