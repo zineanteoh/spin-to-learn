@@ -42,6 +42,7 @@ export function NavUser({ name, email, avatar }: NavUserProps) {
     await supabase.auth.signOut();
 
     router.push("/login");
+    location.reload();
   }, [router]);
 
   return (

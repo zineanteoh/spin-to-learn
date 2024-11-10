@@ -42,6 +42,8 @@ export function LoginForm() {
     }
 
     router.push("/");
+    router.refresh();
+    location.reload();
   }, [email, password, router]);
 
   const handleSignup = useCallback(async () => {
