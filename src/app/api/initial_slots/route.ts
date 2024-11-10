@@ -11,7 +11,7 @@ const MAX_CHOICES = 6;
 export async function GET(request: Request) {
   const examples = [
     {
-      who: { emoji: "🐶", description: "Machiko" },
+      who: { emoji: "🐶", description: "Hachiko" },
       what: { emoji: "🧮", description: "abacus math" },
       how: { emoji: "🦴", description: "while gnawing on a bone" },
     },

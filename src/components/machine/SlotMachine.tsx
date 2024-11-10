@@ -1,13 +1,13 @@
 "use client";
 
 import { SlotReel } from "@/components/machine/SlotReel";
+import { useAudioHook } from "@/hooks/useAudioHook";
 import { useSlotMachineHook } from "@/hooks/useSlotMachineHook";
 import { ItemProp } from "@/lib/utils";
-import { Button } from "@/shadcn-ui/button";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useState } from "react";
 import SpinResult from "../SpinResult";
-import { useRouter } from "next/navigation";
-import { useAudioHook } from "@/hooks/useAudioHook";
+import { SpinLever } from "./SpinLever";
 
 export const SLOT_MACHINE_N_REELS = 3;
 export const SLOT_MACHINE_SPIN_DURATION = 2000;
@@ -147,7 +147,7 @@ export function SlotMachine({
           }}
         />
       )}
-      <div className="flex p-8 gap-4 min-w-[30rem] min-h-[20rem] lg:min-w-[40rem] lg:min-h-[30rem]">
+      <div className="flex p-8 gap-4">
         {/* TODO: implement illusion of infinite spin */}
         <SlotReel
           choices={whoChoices}
@@ -174,14 +174,7 @@ export function SlotMachine({
           spinDuration={spinDurations[2]}
         />
       </div>
-      <Button
-        onClick={handleSpinClick}
-        disabled={isSpinning}
-        size="lg"
-        className="w-32"
-      >
-        {isSpinning ? "Spinning..." : "SPIN"}
-      </Button>
+      <SpinLever onClick={handleSpinClick} isSpinning={isSpinning} />
     </div>
   );
 }
