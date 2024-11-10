@@ -7,12 +7,14 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   const supabase = await createServerSupabase();
+  const { data: user } = await supabase.auth.getUser();
 
   const { who, what, how } = body;
 
   const { data, error } = await supabase
     .from("spins")
     .insert({
+      creator_id: user?.user?.id,
       who: JSON.stringify(who),
       what: JSON.stringify(what),
       how: JSON.stringify(how),

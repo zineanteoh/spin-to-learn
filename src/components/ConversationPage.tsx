@@ -34,10 +34,10 @@ export function ConversationPage({
 
   const createConversation = useCallback(async (spinId: string) => {
     const supabase = await createClientSupabase();
-
+    const { data: user } = await supabase.auth.getUser();
     const { data: conversation } = await supabase
       .from("conversations")
-      .insert({ spin_id: spinId })
+      .insert({ spin_id: spinId, creator_id: user?.user?.id })
       .select("*")
       .single();
     return conversation;

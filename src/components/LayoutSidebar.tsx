@@ -1,7 +1,7 @@
 "use client";
 
 import { NavUser } from "@/components/NavUser";
-import { createScenario, parseSpinResult, Spin } from "@/lib/utils";
+import { parseSpinResult, Spin } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,
@@ -46,32 +46,29 @@ export function LayoutSidebar({
         data: { user },
       } = await supabase.auth.getUser();
 
-      if (user) {
-        setUser({
-          id: user.id,
-          name: user.email ?? "",
-          email: user.email ?? "",
-        });
+      if (!user) {
+        return;
       }
+
+      setUser({
+        id: user.id,
+        name: user.email ?? "",
+        email: user.email ?? "",
+      });
 
       const [{ data: spins }, { data: conversations }] = await Promise.all([
         supabase
           .from("spins")
           .select("*")
           .not("ai_initial_message", "is", null)
+          .eq("creator_id", user.id)
           .order("created_at", { ascending: false }),
         supabase
           .from("conversations")
           .select("id,spin:spins!inner(*)")
+          .eq("creator_id", user.id)
           .order("created_at", { ascending: false }),
       ]);
-
-      // select those that have ai_initial_message not equal to null
-      // const { data: spins, error } = await supabase
-      //   .from("spins")
-      //   .select("*")
-      //   .not("ai_initial_message", "is", null)
-      //   .order("created_at", { ascending: false });
 
       const spinResults = spins?.map(parseSpinResult);
       const conversationResults = conversations?.map((convo) => {

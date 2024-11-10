@@ -74,6 +74,7 @@ export type Database = {
         Row: {
           ai_initial_message: string | null
           created_at: string
+          creator_id: string | null
           how: Json | null
           id: string
           what: Json | null
@@ -82,6 +83,7 @@ export type Database = {
         Insert: {
           ai_initial_message?: string | null
           created_at?: string
+          creator_id?: string | null
           how?: Json | null
           id?: string
           what?: Json | null
@@ -90,6 +92,7 @@ export type Database = {
         Update: {
           ai_initial_message?: string | null
           created_at?: string
+          creator_id?: string | null
           how?: Json | null
           id?: string
           what?: Json | null
